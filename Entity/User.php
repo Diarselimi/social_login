@@ -12,19 +12,35 @@ class User
     private $token;
     private $is_active;
     private $createdAt;
+    private $userId;
 
-    public function __construct()
+    private $databaseManager;
+
+    public function __construct($id = null)
     {
+        $this->databaseManager = new \core\DbManager();
+        if($id) {
+            $sql = "SELECT * FROM ". self::TABLE_NAME ." WHERE user_id = :user_id";
+            $data = $this->databaseManager->findOne($sql, $id);
+            $this->id = $data["id"];
+            $this->name = $data["name"];
+            $this->profile = $data["profile_pic"];
+            $this->token = $data["token"];
+            $this->is_active = $data["is_active"];
+            $this->createdAt = $data["created_at"];
+            $this->userId = $data["user_id"];
+            return $this;
+        }
         $this->createdAt = new \DateTime();
         $this->is_active = 1;
     }
 
     public function selfSave()
     {
-        global $dbConfig;
-        $sql = "Insert into ". self::TABLE_NAME ." (id, profile_pic, `name`, token, is_active) VALUES ('', ?, ?, ?, ?);";
-        $dbm = new \core\DbManager();
-        return $dbm->executeQuery($sql, [$this->profile, $this->name, $this->token, $this->is_active]);
+        $sql = "Insert into ". self::TABLE_NAME ." (id, profile_pic, `name`, token, is_active, user_id) VALUES (?, ?, ?, ?, ?, ?);";
+
+        return $this->databaseManager
+            ->executeQuery($sql, [$this->id, $this->profile, $this->name, $this->token, $this->is_active, $this->userId]);
     }
 
     /**
@@ -123,5 +139,19 @@ class User
         $this->createdAt = $createdAt;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getUserId()
+    {
+        return $this->userId;
+    }
 
+    /**
+     * @param mixed $userId
+     */
+    public function setUserId($userId)
+    {
+        $this->userId = $userId;
+    }
 }

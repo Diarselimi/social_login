@@ -29,7 +29,7 @@ class DbManager
         return $this;
     }
 
-    public function executeQuery($query, $params)
+    public function executeQuery($query, $params = false)
     {
         if($params) {
             $q = $this->connection->prepare($query);
@@ -39,5 +39,13 @@ class DbManager
         }
         # Do some security checks before executing if necesary
         return $q;
+    }
+
+    public function findOne($query, $id)
+    {
+        $q = $this->connection->prepare($query);
+        $q->bindParam('user_id', $id);
+        $q->execute();
+        return $q->fetch();
     }
 }
