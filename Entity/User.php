@@ -19,6 +19,7 @@ class User
     public function __construct($id = null)
     {
         $this->databaseManager = new \core\DbManager();
+
         if($id) {
             $sql = "SELECT * FROM ". self::TABLE_NAME ." WHERE user_id = :user_id";
             $data = $this->databaseManager->findOne($sql, $id);
@@ -37,10 +38,19 @@ class User
 
     public function selfSave()
     {
+        if ($this->doesUserExists($this->userId)) {
+            return $this;
+        }
         $sql = "Insert into ". self::TABLE_NAME ." (id, profile_pic, `name`, token, is_active, user_id) VALUES (?, ?, ?, ?, ?, ?);";
 
         return $this->databaseManager
             ->executeQuery($sql, [$this->id, $this->profile, $this->name, $this->token, $this->is_active, $this->userId]);
+    }
+
+    public function doesUserExists($id)
+    {
+        return $this->databaseManager
+            ->findOne("Select * from ". self::TABLE_NAME." where user_id = :user_id", $id);
     }
 
     /**
