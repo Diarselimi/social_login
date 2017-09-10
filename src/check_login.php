@@ -19,6 +19,8 @@ if (isset($_GET['state'])) {
     $htok->getPersistentDataHandler()->set('state', $_GET['state']);
 }
 
+#TODO: Prevent from logging in if the user_id if is_active = false
+
 $permissions = ['email']; // optionnal
 try {
     if (isset($_SESSION['facebook_access_token'])) {

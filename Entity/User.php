@@ -39,7 +39,8 @@ class User
     public function selfSave()
     {
         if ($this->doesUserExists($this->userId)) {
-            return $this;
+            $sql = "Update table ". self::TABLE_NAME ." set profile_pic = ?, name = ?, is_active = ?, token = ?, user_id = ? ;";
+            return $this->databaseManager->executeQuery($sql, [$this->profile, $this->name, $this->is_active, $this->token, $this->userId]);
         }
         $sql = "Insert into ". self::TABLE_NAME ." (id, profile_pic, `name`, token, is_active, user_id) VALUES (?, ?, ?, ?, ?, ?);";
 
