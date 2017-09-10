@@ -1,8 +1,8 @@
-<?php namespace src;
+<?php
 session_start();
 require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/../Entity/User.php';
 
-use Entity\User;
 use Facebook\Exceptions\FacebookResponseException;
 use Facebook\Exceptions\FacebookSDKException;
 use Facebook\Facebook;
@@ -38,7 +38,7 @@ try {
     exit;
 }
 
-$user = new User();
+$user = new \Entity\User();
 
 
 if (isset($accessToken)) {
@@ -93,7 +93,7 @@ if (isset($accessToken)) {
 
     $user->setName($profile->getName());
     $user->setProfile($picture["url"]);
-
+    $user->selfSave();
 
     echo "<h3> ". $profile->getName()."</h3>";
     // showing picture on the screen

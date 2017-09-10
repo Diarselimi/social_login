@@ -1,7 +1,6 @@
 <?php namespace Entity;
 require __DIR__ . '/../vendor/autoload.php';
-
-use core\DbManager;
+require __DIR__ . '/../core/DbManager.php';
 
 class User
 {
@@ -22,8 +21,10 @@ class User
 
     public function selfSave()
     {
-        $sql = "Insert into ". self::TABLE_NAME ." (id, profile_pic, `name`, token, is_active) VALUES ('', $this->profile, $this->name, $this->token, $this->is_active);";
-        $dbm = new DbManager()
+        global $dbConfig;
+        $sql = "Insert into ". self::TABLE_NAME ." (id, profile_pic, `name`, token, is_active) VALUES ('', ?, ?, ?, ?);";
+        $dbm = new \core\DbManager();
+        return $dbm->executeQuery($sql, [$this->profile, $this->name, $this->token, $this->is_active]);
     }
 
     /**
